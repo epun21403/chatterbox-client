@@ -5,9 +5,28 @@
 var Friends = {
   // TODO: Define how you want to store your list of friends.
 
-  _data: null,
+  _data: [],
 
   // TODO: Define methods which allow you to add, toggle,
   // and check the friendship status of other users.
+  toggleStatus: function(friend) {
+    if (!Friends.isFriend(friend)) {
+      Friends._data.push(friend);
+    } else {
+      Friends._data = Friends._data.filter(function(person) {
+        return person !== friend;
+      });
+    }
+
+    MessagesView.render();
+  },
+
+  isFriend: function(friend) {
+    return Friends._data.includes(friend);
+  },
+
+  restore: function() {
+
+  }
 
 };
