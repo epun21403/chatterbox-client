@@ -5,26 +5,30 @@
 var Rooms = {
 
   // TODO: Define how you want to store the list of rooms
-  _data: {},
+  storage: new Set(),
+
+  selected: 'lobby',
 
   // TODO: Define methods which allow you to add rooms, update the list,
   // mark a room as selected, etc.
-  add: function(name) {
-    var $newRoom = $(`<option value="room">${name}</option>`);
-    RoomsView.$select.append($newRoom);
+  items: function() {
+    return [...Rooms.storage];
   },
 
-  update: function(data) {
-    for (var i = 0; i < data.length; i++) {
-      var currentRoom = data[i].roomname;
-      if (Rooms._data[currentRoom] === undefined) {
-        Rooms._data[currentRoom] = currentRoom;
-      }
-    }
+  isSelected: function(roomname = 'lobby') {
+    return roomname === Rooms.selected;
   },
 
-  retrieveRooms: function() {
-    return Object.keys(Rooms._data);
+  add: function(roomname, callback = () => {}) {
+    Rooms.storage.add(roomname);
+    Rooms.selected = roomname;
+    callback(Rooms.items());
+  },
+
+  update: function(messages, callback = () => {}) {
+    messages.forEach(message => {
+      Rooms.add(message.roomname);
+    });
+    callback(Rooms.items());
   }
-
 };

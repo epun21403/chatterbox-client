@@ -16,33 +16,34 @@ var RoomsView = {
   render: function() {
     // TODO: Render out the list of rooms.
     //retreiving data object with room names
-    var allRooms = Rooms.retrieveRooms();
-    console.log(allRooms);
-    for (var i = 0; i < allRooms.length; i++) {
-      RoomsView.renderRoom(allRooms[i]);
-    }
+    RoomsView.$select.html('');
+    Rooms.items().forEach(RoomsView.renderRoom);
+    RoomsView.$select.val(Rooms.selected);
   },
 
   renderRoom: function(roomname) {
     // TODO: Render out a single room.
-    RoomsView.$select.append(`<option value="room">${roomname}</option>`);
+    var $option = $('<option>')
+      .val(roomname)
+      .text(roomname);
+    RoomsView.$select.append($option);
   },
 
   handleChange: function(event) {
     // TODO: Handle a user selecting a different room.
-    // for (var i = 0; i < Messages._data.length; i++) {
-    //   Rooms.add(Messages._data[i].roomname);
-    // }
-
+    Rooms.selected = RoomsView.$select.val();
+    MessagesView.render();
   },
 
-  handleClick: function(event) {
+  handleClick: function() {
     // TODO: Handle the user clicking the "Add Room" button.
-    var userInput = prompt('Add room');
-    if (!Rooms._data[userInput]) {
-      Rooms._data[userInput] = userInput;
-      Rooms.add(userInput);
-      RoomsView.renderRoom(userInput);
+    var roomname = prompt('Enter a room');
+    if (roomname) {
+      Rooms.add(roomname, () => {
+        RoomsView.render();
+        // MessagesView.render();
+      });
     }
+
   }
 };

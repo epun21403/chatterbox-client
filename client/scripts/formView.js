@@ -15,14 +15,16 @@ var FormView = {
     event.preventDefault();
     // TODO: Currently, this is all handleSubmit does.
     // Make this function actually send a message to the Parse API.
-    var container = {};
+    var message = {
+      username: App.username,
+      roomname: Rooms.selected || 'lobby',
+      text: FormView.$form.find('message').val()
+    };
 
-    container['username'] = decodeURIComponent(window.location.search.substr(10));
-    container['text'] = $('#message').val();
-    container['roomname'] = $('#rooms select').val();
-    Parse.create(container);
-
-
+    Parse.create(message, (data) => {
+      Object.assign(message, data);
+      Messages.add(message, MessagesView.render);
+    });
     console.log('click!');
   },
 

@@ -17,33 +17,23 @@ var App = {
     // Fetch initial batch of messages
     App.startSpinner();
     App.fetch(App.stopSpinner);
-    App.stopSpinner();
 
+    setInterval(App.fetch, 3000);
     // TODO: Make sure the app loads data from the API
     // continually, instead of just once at the start.
-
   },
 
   fetch: function(callback = ()=>{}) {
     Parse.readAll((data) => {
       // examine the response from the server request:
-      Messages.retrieve(data);
-      Rooms.update(data);
-      MessagesView.render(Messages._data);
-      RoomsView.render();
-      // for (var i = 0; i < data.length; i++) {
-      //   var room = data[i].roomname;
-      //   if (room !== undefined) {
-      //     RoomsView.renderRoom(room);
-      //   } else {
-      //     RoomsView.renderRoom('');
-      //   }
-      // }
-      //setInterval(App.fetch, 10000);
       console.log(data);
 
       // TODO: Use the data to update Messages and Rooms
       // and re-render the corresponding views.
+      Messages.update(data, MessagesView.render);
+      Rooms.update(data, RoomsView.render);
+
+      callback();
     });
   },
 
